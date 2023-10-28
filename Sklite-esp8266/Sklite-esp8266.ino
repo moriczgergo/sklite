@@ -4,6 +4,12 @@
 #include <ESP8266WebServer.h>
 #include <stdio.h>
 
+#ifdef C_STATIC_IP
+IPAddress ip(C_IP[0], C_IP[1], C_IP[2], C_IP[3]);
+IPAddress gateway(C_GATEWAY[0], C_GATEWAY[1], C_GATEWAY[2], C_GATEWAY[3]);
+IPAddress subnet(C_SUBNET[0], C_SUBNET[1], C_SUBNET[2], C_SUBNET[3]);
+#endif
+
 CRGB leds[C_LEDCOUNT];
 ESP8266WebServer server(80);
 
@@ -25,6 +31,9 @@ void setup() {
   Serial.println(ssid);
 
   WiFi.begin(ssid, password);
+#ifdef C_STATIC_IP
+  WiFi.config(ip, gateway, subnet);
+#endif
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
